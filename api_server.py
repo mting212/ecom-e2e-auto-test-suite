@@ -58,11 +58,20 @@ SEED_PHONE = "13800001111"
 
 def seed_data():
     """重置数据到初始状态"""
-    global users, tokens, carts, orders
+    global users, tokens, carts, orders, products
     users = {SEED_PHONE: {"password": "Aa123456", "nickname": "种子用户", "created_at": "2026-01-01"}}
     tokens = {}
     carts = {}
     orders = {}
+    # 重置商品库存
+    products = [
+        {"id": 1, "name": "iPhone 15", "category": "手机", "price": 5999, "stock": 100},
+        {"id": 2, "name": "华为 Mate 60 Pro", "category": "手机", "price": 6999, "stock": 50},
+        {"id": 3, "name": "MacBook Pro 14", "category": "电脑", "price": 14999, "stock": 30},
+        {"id": 4, "name": "AirPods Pro", "category": "配件", "price": 1899, "stock": 200},
+        {"id": 5, "name": "iPad Air", "category": "平板", "price": 4799, "stock": 80},
+        {"id": 6, "name": "小米14 Ultra", "category": "手机", "price": 4599, "stock": 5},
+    ]
 
 
 seed_data()

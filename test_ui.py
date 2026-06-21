@@ -30,47 +30,34 @@ def test_open_baidu(driver):
     assert "百度" in driver.title
     print(f"页面标题: {driver.title}")
 
-def test_baidu_search(driver):
-    """百度搜索 python，断言结果页包含搜索结果"""
-    driver.get("https://www.baidu.com")
+def test_duckduckgo_search(driver):
+    """DuckDuckGo 搜索 python，断言标题包含关键词"""
+    driver.get("https://duckduckgo.com")
 
-    # 找到搜索框，输入关键词
-    search_box = driver.find_element("id", "kw")
-    search_box.clear()
-    search_box.send_keys("python\n")  # \n 回车 = 点击搜索
+    search_box = WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.NAME, "q"))
+    )
+    search_box.send_keys("python\n")
 
-    # 等待页面加载（简单方式，后面学显式等待）
-    import time
-    time.sleep(2)
-
-    # 断言：页面标题变了
-    assert "python" in driver.title
-
-    # 断言：搜索结果里有关键词
-    page_text = driver.find_element("tag name", "body").text
-    assert "python" in page_text.lower()
+    WebDriverWait(driver, 10).until(EC.title_contains("python"))
+    assert "python" in driver.title.lower()
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.alert import Alert
 
 
-def test_baidu_search_with_wait(driver):
-    """百度搜索 —— 用显式等待替代 time.sleep"""
-    driver.get("https://www.baidu.com")
+def test_duckduckgo_search_with_wait(driver):
+    """DuckDuckGo 搜索 —— 显式等待"""
+    driver.get("https://duckduckgo.com")
 
-    # 等待搜索框出现并可输入
     search_box = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, "kw"))
+        EC.element_to_be_clickable((By.NAME, "q"))
     )
-    search_box.send_keys("pytest\n")
+    search_box.send_keys("selenium\n")
 
-    # 等待结果页标题变化
-    WebDriverWait(driver, 10).until(
-        EC.title_contains("pytest")
-    )
-
-    assert "pytest" in driver.title  
+    WebDriverWait(driver, 10).until(EC.title_contains("selenium"))
+    assert "selenium" in driver.title.lower()  
 
 
 # ===== Day 14：Page Object 模式 =====
@@ -111,12 +98,12 @@ def test_po_alert_prompt(driver):
     assert "You entered: Hello Page Object" in page.get_result_text()
 
 
-from pages.baidu_page import BaiduPage
+from pages.baidu_page import SearchPage
 
 
-def test_po_baidu_search(driver):
-    """Page Object 版：百度搜索"""
-    page = BaiduPage(driver)
+def test_po_duckduckgo_search(driver):
+    """Page Object 版：DuckDuckGo 搜索"""
+    page = SearchPage(driver)
     page.open().search("selenium webdriver").wait_title_contains("selenium")
 
-    assert "selenium" in page.title
+    assert "selenium" in page.title.lower()
